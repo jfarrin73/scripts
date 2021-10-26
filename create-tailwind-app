@@ -25,10 +25,10 @@ do
     name="$REPLY"
 done
 
-printf "Would you like to to install \e[32mHeadlessUI\e[m [y/n]: "
+printf "Would you like to install \e[32mHeadlessUI\e[m [y/n]: "
 read headless
 
-printf 'Would you like to to install \e[32mReact-Router\e[m [y/n]: '
+printf 'Would you like to install \e[32mReact-Router\e[m [y/n]: '
 read router
 
 # CREATE REACT APP AND CD INTO DIR
