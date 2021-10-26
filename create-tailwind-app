@@ -2,19 +2,49 @@
 
 # READ NAME ARGUMENT OR PROMPT FOR NAME IF NONE PROVIDED
 
+msg='\e[35m░░░░░░░░▄▄▄▀▀▀▄▄███▄░░░░░░░░░░░░░░
+░░░░░▄▀▀░░░░░░░▐░▀██▌░░░░░░░░░░░░░
+░░░▄▀░░░░▄▄███░▌▀▀░▀█░░░░░░░░░░░░░
+░░▄█░░▄▀▀▒▒▒▒▒▄▐░░░░█▌░░░░░░░░░░░░
+░▐█▀▄▀▄▄▄▄▀▀▀▀▌░░░░░▐█▄░░░░░░░░░░░
+░▌▄▄▀▀░░░░░░░░▌░░░░▄███████▄░░░░░░
+░░░░░░░░░░░░░▐░░░░▐███████████▄░░░
+░░░░░le░░░░░░░▐░░░░▐█████████████▄
+░░░░toucan░░░░░░▀▄░░░▐█████████████▄ 
+░░░░░░has░░░░░░░░▀▄▄███████████████ 
+░░░░░arrived░░░░░░░░░░░░█▀██████░░\e[m\n'
+
+printf "$msg"
+
 name="$1"
-echo $name
-while [ -z $name ]
+
+while [[ -z $name ]] || [[ $name =~ [A-Z] ]]
 do
-    echo "Please enter a name for your app"
+    printf "Please enter a name for your app in all lowercase letters: "
     read
     name="$REPLY"
 done
+
+printf "Would you like to to install \e[32mHeadlessUI\e[m [y/n]: "
+read headless
+
+printf 'Would you like to to install \e[32mReact-Router\e[m [y/n]: '
+read router
 
 # CREATE REACT APP AND CD INTO DIR
 
 npx create-react-app $name
 cd $name
+
+# OPTIONALLY INSTALL HEADLESS UI AND REACT ROUTER
+
+if [[ $headless =~ ^[Yy]$ ]]
+    then npm install @headlessui/react
+fi
+
+if [[ $router =~ ^[Yy]$ ]]
+    then npm install react-router-dom
+fi
 
 # INSTALL TAILWIND AND CRACO
 
@@ -60,6 +90,15 @@ echo '        </div>' >> ./src/App.js
 echo '    );' >> ./src/App.js
 echo -e '}\n' >> ./src/App.js
 echo 'export default App;' >> ./src/App.js
+
+ # Remove create-react-app garbage
+rm ./src/logo.svg
+rm ./src/reportWebVitals.js
+rm ./src/index.css
+
+sed -i '' '/import reportWebVitals/d' ./src/index.js
+sed -i '' '/reportWebVitals()/d' ./src/index.js
+sed -i '' '/index.css/d' ./src/index.js
 
 # OPEN IN INTELLIJ AND START APP
 idea .
