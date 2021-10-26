@@ -1,24 +1,25 @@
 #!/bin/bash
 
-# PROMPT USER FOR DIRECTORY AND CD INTO IT
+# READ NAME ARGUMENT OR PROMPT FOR NAME IF NONE PROVIDED
 
-echo 'Enter the full path of the parent directory where you want your app created'
-read currentDir
-cd "$currentDir"
+name="$1"
+echo $name
+while [ -z $name ]
+do
+    echo "Please enter a name for your app"
+    read
+    name="$REPLY"
+done
 
-# PROMPT USER FOR APP NAM, CREATE REACT APP, AND CD INTO DIR
+# CREATE REACT APP AND CD INTO DIR
 
-echo 'Enter the name of your react app'
-read appName
-npx create-react-app "$appName"
-cd "$appName"
-
+npx create-react-app $name
+cd $name
 
 # INSTALL TAILWIND AND CRACO
 
 npm install -D tailwindcss@npm:@tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9
 npm install @craco/craco
-
 
 # UPDATE package.json 
 
@@ -26,17 +27,14 @@ sed -i '' 's/react-scripts start/craco start/g' package.json
 sed -i '' 's/react-scripts build/craco build/g' package.json
 sed -i '' 's/react-scripts test/craco test/g' package.json
 
-
 # CREATE craco.config.js AND ADD TEXT
 
 echo -e "// craco.config.js\nmodule.exports = {\n    style: {\n       postcss: {\n           plugins: [\n              require('tailwindcss'),\n               require('autoprefixer'),\n           ],\n        },\n    },\n}" > craco.config.js
-
 
 # CREATE tailwind.config.js AND UPDATE TEXT
 
 npx tailwindcss-cli@latest init
 echo -e "// tailwind.config.js\nmodule.exports = {\n  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],\n  darkMode: false, // or 'media' or 'class'\n  theme: {\n    extend: {},\n  },\n  variants: {\n    extend: {},\n  },\n  plugins: [],\n}" > tailwind.config.js
-
 
 # UPDATE App.css WTIH @tailwind LINES
 
@@ -44,11 +42,9 @@ echo '@tailwind base;' > ./src/App.css
 echo '@tailwind components;' >> ./src/App.css
 echo '@tailwind utilities;' >> ./src/App.css
 
-
 # UPDATE index.html
 
 sed -i '' 's/<body>/<body class="bg-gray-900 text-white">/g' ./public/index.html
-
 
 # UPDATE App.js
 
@@ -65,6 +61,6 @@ echo '    );' >> ./src/App.js
 echo -e '}\n' >> ./src/App.js
 echo 'export default App;' >> ./src/App.js
 
+# OPEN IN INTELLIJ AND START APP
 idea .
-
 npm start
