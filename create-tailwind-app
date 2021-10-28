@@ -25,6 +25,12 @@ do
     name="$REPLY"
 done
 
+printf "Would you like to install \e[32maxios\e[m [y/n]: "
+read axios
+
+printf "Would you like to install \e[32mReact-Icons\e[m [y/n]: "
+read icons
+
 printf "Would you like to install \e[32mHeadlessUI\e[m [y/n]: "
 read headless
 
@@ -37,6 +43,14 @@ npx create-react-app $name
 cd $name
 
 # OPTIONALLY INSTALL HEADLESS UI AND REACT ROUTER
+
+if [[ $axios =~ ^[Yy]$ ]]
+    then npm install axios
+fi
+
+if [[ $icons =~ ^[Yy]$ ]]
+    then npm install react-icons --save
+fi
 
 if [[ $headless =~ ^[Yy]$ ]]
     then npm install @headlessui/react
