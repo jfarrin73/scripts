@@ -25,7 +25,7 @@ do
     name="$REPLY"
 done
 
-printf "Would you like to install \e[32maxios\e[m [y/n]: "
+printf "Would you like to install \e[32mAxios\e[m [y/n]: "
 read axios
 
 printf "Would you like to install \e[32mReact-Icons\e[m [y/n]: "
@@ -113,6 +113,10 @@ rm ./src/index.css
 sed -i '' '/import reportWebVitals/d' ./src/index.js
 sed -i '' '/reportWebVitals()/d' ./src/index.js
 sed -i '' '/index.css/d' ./src/index.js
+
+mkdir ./src/components
+mkdir ./src/services
+touch ./src/services/DataService.js
 
 # OPEN IN INTELLIJ AND START APP
 idea .
