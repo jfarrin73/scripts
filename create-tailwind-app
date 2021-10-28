@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# READ NAME ARGUMENT OR PROMPT FOR NAME IF NONE PROVIDED
-
 msg='\e[35m░░░░░░░░▄▄▄▀▀▀▄▄███▄░░░░░░░░░░░░░░
 ░░░░░▄▀▀░░░░░░░▐░▀██▌░░░░░░░░░░░░░
 ░░░▄▀░░░░▄▄███░▌▀▀░▀█░░░░░░░░░░░░░
@@ -14,9 +12,14 @@ msg='\e[35m░░░░░░░░▄▄▄▀▀▀▄▄███▄░░░
 ░░░░░░has░░░░░░░░▀▄▄███████████████ 
 ░░░░░arrived░░░░░░░░░░░░█▀██████░░\e[m\n'
 
-printf "$msg"
+# printf "$msg"
 
-name="$1"
+name=$1
+flag=$2
+
+echo $flag
+
+# VALIDATE NAME ARGUMENT
 
 while [[ -z $name ]] || [[ $name =~ [A-Z] ]]
 do
@@ -25,17 +28,39 @@ do
     name="$REPLY"
 done
 
-printf "Would you like to install \e[32mAxios\e[m [y/n]: "
-read axios
+# CHECK FOR -a FLAG TO SKIP PROMPTS AND INSTALL EVERYTHING
 
-printf "Would you like to install \e[32mReact-Icons\e[m [y/n]: "
-read icons
+if [ "$flag" = "-a" ]; then
+    axios="y"
+    headless="y"
+    icons="y"
+    router="y"
+else
+    # PACKAGE PROMPTS
 
-printf "Would you like to install \e[32mHeadlessUI\e[m [y/n]: "
-read headless
+    if [[ -z $axios ]]
+        then printf "Would you like to install \e[32mAxios\e[m [y/n]: "
+        read axios
+    fi
+    if [[ -z $icons ]]
+        then printf "Would you like to install \e[32mReact-Icons\e[m [y/n]: "
+        read icons
+    fi
+    if [[ -z $headless ]]
+        then printf "Would you like to install \e[32mHeadlessUI\e[m [y/n]: "
+        read headless
+    fi
+    if [[ -z $router ]]
+        then printf 'Would you like to install \e[32mReact-Router\e[m [y/n]: '
+        read router
+    fi
+fi
 
-printf 'Would you like to install \e[32mReact-Router\e[m [y/n]: '
-read router
+echo $axios
+echo $icons
+echo $headless
+echo $router
+echo "done"
 
 # CREATE REACT APP AND CD INTO DIR
 
@@ -46,18 +71,22 @@ cd $name
 
 if [[ $axios =~ ^[Yy]$ ]]
     then npm install axios
+    echo "installed Axios"
 fi
 
 if [[ $icons =~ ^[Yy]$ ]]
     then npm install react-icons --save
+    echo "installed React-Icons"
 fi
 
 if [[ $headless =~ ^[Yy]$ ]]
     then npm install @headlessui/react
+    echo "installed Headless UI"
 fi
 
 if [[ $router =~ ^[Yy]$ ]]
     then npm install react-router-dom
+    echo "installed React-Router"
 fi
 
 # INSTALL TAILWIND AND CRACO
@@ -117,6 +146,18 @@ sed -i '' '/index.css/d' ./src/index.js
 mkdir ./src/components
 mkdir ./src/services
 touch ./src/services/DataService.js
+
+if [[ $axios =~ ^[Yy]$ ]]
+    then echo 'import axios from "axios";' > ./src/services/DataService.js
+fi
+
+echo '' >> ./src/services/DataService.js
+echo 'const URL = "http://localhost:3001";' >> ./src/services/DataService.js
+echo '' >> ./src/services/DataService.js
+echo 'class DataService {' >> ./src/services/DataService.js
+echo '' >> ./src/services/DataService.js
+echo '}' >> ./src/services/DataService.js
+echo 'export default new DataService()' >> ./src/services/DataService.js
 
 # OPEN IN INTELLIJ AND START APP
 idea .
